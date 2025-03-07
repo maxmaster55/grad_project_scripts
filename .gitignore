@@ -1,0 +1,10 @@
+landsat
+env
+out
+*.xml
+*.json
+*.png
+*.zip
+*.csv
+*.pyc
+*.tif
