@@ -13,9 +13,9 @@ WATER = 2
 URBAN = 3
 
 # thresholds for the classes
-NDVI_THRESHOLD = 0.5
+NDVI_THRESHOLD = 0.6
 NDWI_THRESHOLD = 0.85
-NDBI_THRESHOLD = 0.656
+NDBI_THRESHOLD = 0.8
 
 
 # Calculate NDVI
