@@ -116,8 +116,8 @@ def create_multiclass_mask(ndvi, ndwi, ndbi, ndvi_t=NDVI_THRESHOLD, ndwi_t=NDWI_
     mask = np.zeros_like(ndvi, dtype=np.uint8)  # Initialize with all zeros
     
     mask[ndvi > ndvi_t] = VEGETATION
-    mask[ndwi > ndwi_t] = WATER
     mask[ndbi > ndbi_t] = URBAN
+    mask[ndwi > ndwi_t] = WATER
     
     # Ensure remaining pixels are set to BG
     mask[(ndvi <= ndvi_t) & (ndwi <= ndwi_t) & (ndbi <= ndbi_t)] = BACKGROUND
