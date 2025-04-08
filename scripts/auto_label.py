@@ -8,6 +8,7 @@ import csv
 import os
 
 # Constants for the classes
+BACKGROUND = 0
 VEGETATION = 1
 WATER = 2
 URBAN = 3
@@ -118,8 +119,8 @@ def create_multiclass_mask(ndvi, ndwi, ndbi, ndvi_t=NDVI_THRESHOLD, ndwi_t=NDWI_
     mask[ndwi > ndwi_t] = WATER
     mask[ndbi > ndbi_t] = URBAN
     
-    # Ensure remaining pixels are set to 0
-    mask[(ndvi <= ndvi_t) & (ndwi <= ndwi_t) & (ndbi <= ndbi_t)] = 0
+    # Ensure remaining pixels are set to BG
+    mask[(ndvi <= ndvi_t) & (ndwi <= ndwi_t) & (ndbi <= ndbi_t)] = BACKGROUND
     return mask
 
 # the main processing function
@@ -205,6 +206,7 @@ if __name__ == "__main__":
     with open('classes.csv', mode='w') as file:
         writer = csv.writer(file)
         writer.writerow(["Class", "Value"])
+        writer.writerow(["Background", BACKGROUND])
         writer.writerow(["Vegetation", VEGETATION])
         writer.writerow(["Water", WATER])
         writer.writerow(["Urban", URBAN])
