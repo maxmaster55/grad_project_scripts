@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 WIDTH_DEFAULT = 1280
 HEIGHT_DEFAULT = 720
-LANDSAT_RGB_BANDS = [4, 3, 2]  # Common true-color bands for Landsat 8
+LANDSAT_RGB_BANDS = [1, 2, 3, 4, 5, 6, 7]
 
 def compute_global_percentiles(image_path):
     """Compute global 2%-98% percentile range for normalization across all tiles."""
