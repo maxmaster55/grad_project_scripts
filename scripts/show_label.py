@@ -1,38 +1,45 @@
 import numpy as np
+import rasterio
+import cv2
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
-from PIL import Image
 import argparse
+import os
 
-# Class constants
+# Class values
 BACKGROUND = 0
 VEGETATION = 1
 WATER = 2
 URBAN = 3
 
-def visualize_multiclass_mask(mask, output_file="label_visualization.png"):
-    cmap = ListedColormap(["black", "green", "blue", "red"])
-    
+# Color map: black=background, green=vegetation, blue=water, red=urban
+cmap = ListedColormap(["black", "green", "blue", "red"])
+class_labels = ["Background", "Vegetation", "Water", "Urban"]
+
+def visualize_mask(mask):
     plt.imshow(mask, cmap=cmap)
-    plt.title("Multiclass Mask")
-    plt.colorbar(ticks=[0, 1, 2, 3], format=plt.FuncFormatter(
-        lambda x, _: ["Background", "Vegetation", "Water", "Urban"][int(x)]))
+    plt.colorbar(ticks=[0, 1, 2, 3], format=plt.FuncFormatter(lambda x, _: class_labels[int(x)]))
+    plt.title("Multiclass Mask Visualization")
+    plt.axis("off")
+    plt.show()
 
-    plt.savefig(output_file)
-    print(f"✅ Saved visualization to {output_file}")
-
-
-def load_png_mask(image_path):
-    # Load the image in grayscale mode (as labels)
-    image = Image.open(image_path).convert("L")
-    mask = np.array(image)
-    return mask
+def load_mask(path):
+    if path.endswith('.tif'):
+        with rasterio.open(path) as src:
+            return src.read(1)  # First band
+    elif path.endswith('.png'):
+        return cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    else:
+        raise ValueError("Unsupported file format. Use .tif or .png.")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Display a PNG label mask with class colors.")
-    parser.add_argument("-i", "--input", required=True, help="Path to the PNG image.")
-    parser.add_argument("-o", "--output", default="label_visualization.png", help="Output PNG file for visualization.")
+    parser = argparse.ArgumentParser(description="Visualize a multiclass mask.")
+    parser.add_argument("mask_path", type=str, help="Path to the mask file (.tif or .png)")
     args = parser.parse_args()
 
-    mask = load_png_mask(args.input)
-    visualize_multiclass_mask(mask, args.output)
+    if not os.path.exists(args.mask_path):
+        print("❌ Mask file not found.")
+        exit()
+
+    mask = load_mask(args.mask_path)
+    visualize_mask(mask)

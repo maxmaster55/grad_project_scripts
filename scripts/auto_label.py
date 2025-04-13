@@ -43,6 +43,46 @@ def calculate_ndbi(image):
     ndbi = (swir - nir) / (swir + nir + epsilon)
     return ndbi
 
+def calculate_ui(image):
+    blue = image[1]   # Band 2
+    red = image[3]    # Band 4
+    nir = image[4]    # Band 5
+    swir1 = image[5]  # Band 6
+
+    epsilon = 1e-6  # To avoid division by zero
+
+    numerator = (swir1 + red) - (nir + blue)
+    denominator = (swir1 + red) + (nir + blue) + epsilon
+
+    ui = numerator / denominator
+    return ui
+
+def calculate_ibi(image):
+    # Band indexes for Landsat 8
+    green = image[2]  # Band 3
+    red = image[3]    # Band 4
+    nir = image[4]    # Band 5
+    swir1 = image[5]  # Band 6
+
+    # Small constant to avoid division by zero
+    epsilon = 1e-6
+
+    # Step 1: Calculate NDBI
+    ndbi = (swir1 - nir) / (swir1 + nir + epsilon)
+
+    # Step 2: Calculate NDVI
+    ndvi = (nir - red) / (nir + red + epsilon)
+
+    # Step 3: Calculate MNDWI
+    mndwi = (green - swir1) / (green + swir1 + epsilon)
+
+    # Step 4: Calculate IBI
+    ibi_numerator = ndbi - (ndvi + mndwi)
+    ibi_denominator = ndbi + (ndvi + mndwi) + epsilon
+
+    ibi = ibi_numerator / ibi_denominator
+
+    return ibi
 
 def save_image_tif(image, filename, src=None):
     # Ensure the image has shape (1, height, width)

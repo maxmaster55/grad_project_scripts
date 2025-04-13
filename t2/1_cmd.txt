@@ -1,0 +1,1 @@
+python ../scripts/auto_label.py -i tif_2_rad.tif -o 2_mask/ -show --ndvi 0.8 --ndbi 0.27 --ndwi 0.5591
